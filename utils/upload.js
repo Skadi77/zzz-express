@@ -27,11 +27,12 @@ async function getAliyunDirectUploadParams(fileType) {
     const date = moment().add(1, "days");
 
     // 允许的文件夹范围
-    const allowedFolders = ["images", "videos", "audios", "others"]; // 定义允许的文件夹
+    const allowedFolders = ["images", "videos", "audios", "text", "others"]; // 定义允许的文件夹
     const folderMap = {
       image: "images",
       video: "videos",
       audio: "audios",
+      text: "text",
       other: "others",
     };
 
@@ -59,15 +60,13 @@ async function getAliyunDirectUploadParams(fileType) {
             "image/jpeg",
             "image/png",
             "image/gif",
+            "image/svg",
             "image/webp", // 图片
             "video/mp4",
-            "video/quicktime",
-            "video/x-msvideo",
-            "video/mkv", // 视频
-            "audio/mpeg",
-            "audio/wav",
-            "audio/ogg",
-            "audio/aac", // 音频
+            "video/webm", // 视频
+            "audio/mp3",
+            "audio/wav", // 音频
+            "text/vtt", // 字幕
           ],
         ], // 扩展文件类型支持
       ],

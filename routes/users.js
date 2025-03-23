@@ -3,7 +3,37 @@ var router = express.Router();
 const User = require("../models/user"); // 引入 User 模型
 const z = require("zod");
 const jwt = require("jsonwebtoken");
-// const authenticateToken = require("../utils/auth"); 身份验证
+const authenticateToken = require("../utils/auth"); //身份验证
+
+//  拿用户id例子。
+router.get("/test", authenticateToken, async (req, res) => {
+  try {
+    console.log(req.zzzToken);
+
+    // 返回统一的成功响应
+    return res.status(200).json({
+      success: true,
+      message: "有效token",
+    });
+  } catch (error) {
+    // 如果 Zod 验证失败，返回详细的错误信息
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        success: false,
+        message: "表单验证失败",
+        error: error.issues.map((issue) => issue.message).join(", "),
+      });
+    }
+
+    // 捕获其他异常（如数据库错误）
+    console.error("登录时出错：", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "服务器错误",
+      error: error.message,
+    });
+  }
+});
 
 // 定义表单验证规则
 const formSchema = z.object({
@@ -95,7 +125,7 @@ router.post("/login", async (req, res) => {
 
     // 使用环境变量中的密钥来生成和验证 JWT
     const token = jwt.sign(
-      { userId: user.id, role: user.role }, // 添加 role 字段
+      { userId: user._id }, // 添加用户 _id 字段
       process.env.JWT_SECRET,
       { expiresIn: "30d" } // 设置过期时间为 30 天
     );
@@ -106,9 +136,8 @@ router.post("/login", async (req, res) => {
       message: "登录成功！",
       data: {
         user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
+          email: user.email, // 账号
+          name: user.name, // 名字
           usersign: user.usersign, // 签名
           avatar: user.avatar, // 头像
           registrationTime: user.registrationTime, // 注册时间

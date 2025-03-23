@@ -24,10 +24,9 @@ const authenticateToken = (req, res, next) => {
         return res.status(403).json({ message: "无效的 token" });
       }
 
-      // 将解码后的 userId 和 role 存入 req.user
-      req.user = {
+      // 将解码后的 _id 存入 req.user
+      req.zzzToken = {
         userId: decoded.userId,
-        role: decoded.role,
       };
 
       // 继续执行下一个中间件或路由处理

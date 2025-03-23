@@ -9,6 +9,7 @@ require("./models/database");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+var articleRouter = require("./routes/article");
 
 var app = express();
 
@@ -29,5 +30,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/article", articleRouter);
 
 module.exports = app;

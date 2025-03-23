@@ -98,7 +98,7 @@ userSchema.statics.verifyLogin = async function (email, inputPassword) {
 
     if (isPasswordMatch) {
       return {
-        id: user._id,
+        _id: user._id.toString(),
         email: user.email,
         name: user.name,
         usersign: user.usersign, // 签名
@@ -110,6 +110,25 @@ userSchema.statics.verifyLogin = async function (email, inputPassword) {
     return null; // 密码不匹配
   } catch (error) {
     console.error("登录验证时出错：", error.message);
+    throw error;
+  }
+};
+
+// 静态方法：根据 userId 获取用户的头像和名字
+userSchema.statics.getUserProfile = async function (userId) {
+  try {
+    const user = await this.findById(userId).select("name avatar"); // 只查询 name 和 avatar 字段
+
+    if (!user) {
+      throw new Error("用户不存在");
+    }
+
+    return {
+      name: user.name,
+      avatar: user.avatar || "", // 如果头像为空，则返回空字符串
+    };
+  } catch (error) {
+    console.error("获取用户信息时出错：", error.message);
     throw error;
   }
 };
